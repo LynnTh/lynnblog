@@ -1,9 +1,17 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>My New Hugo Site</title>
+        <title>Lynn的技术随笔</title>
         <link>http://lynn404.com/</link>
         <description>This is my cool site</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 31 Jul 2022 00:42:48 &#43;0800</lastBuildDate>
             <atom:link href="http://lynn404.com/index.xml" rel="self" type="application/rss+xml" />
-        </channel>
+        <item>
+    <title>First</title>
+    <link>http://lynn404.com/posts/first/</link>
+    <pubDate>Sun, 31 Jul 2022 00:42:48 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>http://lynn404.com/posts/first/</guid>
+    <description><![CDATA[博客测试]]></description>
+</item>
+</channel>
 </rss>
