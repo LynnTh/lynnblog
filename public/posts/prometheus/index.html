@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Prometheus - Lynn的技术随笔</title><meta name="Description" content="养猫人"><meta property="og:title" content="Prometheus" />
+<meta property="og:description" content="Prometheus&amp;Grafana介绍 Prometheus介绍 基础知识 概述 Prometheus 是一个监控系统和时序数据库，特别适合监控云原生环境，它" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://lynn404.com/posts/prometheus/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-05T23:58:37+08:00" />
+<meta property="article:modified_time" content="2022-08-05T23:58:37+08:00" /><meta property="og:site_name" content="Lynn的技术随笔" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Prometheus"/>
+<meta name="twitter:description" content="Prometheus&amp;Grafana介绍 Prometheus介绍 基础知识 概述 Prometheus 是一个监控系统和时序数据库，特别适合监控云原生环境，它"/>
+<meta name="application-name" content="Lynn的技术随笔">
+<meta name="apple-mobile-web-app-title" content="Lynn的技术随笔"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://lynn404.com/posts/prometheus/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Prometheus",
+        "inLanguage": "zh-cn",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/lynn404.com\/posts\/prometheus\/"
+        },"genre": "posts","keywords": "prometheus, grafana","wordcount":  3974 ,
+        "url": "http:\/\/lynn404.com\/posts\/prometheus\/","datePublished": "2022-08-05T23:58:37+08:00","dateModified": "2022-08-05T23:58:37+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Lynn"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Lynn的技术随笔">Lynn的技术随笔</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Lynn的技术随笔">Lynn的技术随笔</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Prometheus</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Lynn</a></span>&nbsp;<span class="post-category">included in <a href="/categories/monitor/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>monitor</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-08-05">2022-08-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;3974 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;8 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#prometheus介绍">Prometheus介绍</a>
+      <ul>
+        <li><a href="#基础知识">基础知识</a></li>
+        <li><a href="#系统架构">系统架构</a></li>
+        <li><a href="#数据模型">数据模型</a></li>
+        <li><a href="#查询语言">查询语言</a></li>
+      </ul>
+    </li>
+    <li><a href="#grafana介绍">Grafana介绍</a>
+      <ul>
+        <li><a href="#基础知识-1">基础知识</a></li>
+        <li><a href="#部署grafana">部署grafana</a></li>
+        <li><a href="#安装插件">安装插件</a></li>
+        <li><a href="#面板">面板</a></li>
+        <li><a href="#配置数据源">配置数据源</a></li>
+        <li><a href="#配置查询语句">配置查询语句</a></li>
+      </ul>
+    </li>
+    <li><a href="#prometheus优化架构">prometheus优化架构</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="prometheusgrafana介绍">Prometheus&amp;Grafana介绍</h1>
+<h2 id="prometheus介绍">Prometheus介绍</h2>
+<h3 id="基础知识">基础知识</h3>
+<h4 id="概述">概述</h4>
+<p><a href="https://prometheus.io/" target="_blank" rel="noopener noreffer ">Prometheus</a> 是一个监控系统和时序数据库，特别适合监控云原生环境，它具有多维数据模型和强大的查询语言，并在一个生态系统中集成了检测、指标收集、服务发现和报警等功能。</p>
+<h4 id="什么是prometheus">什么是Prometheus</h4>
+<p><a href="https://prometheus.io/" target="_blank" rel="noopener noreffer ">Prometheus</a> 是一个基于指标监控和报警的工具栈。 Prometheus 起源于 SoundCloud ，因为微服务迅速发展，导致实例数量以几何倍数递增，不得不考虑设计一个符合以下几个功能的监控系统：</p>
+<ul>
+<li>多维数据模型，可以按照实例，服务，端点和方法之类的维度随意对数据进行切片和切块。</li>
+<li>操作简单，可以随时随地部署监控服务，甚至在本地工作站上，而无需设置分布式存储后端或重新配置环境。</li>
+<li>可扩展的数据收集和分散的架构，以便于可以可靠的监控服务的许多实例，独立团队可以部署独立的监控服务。</li>
+<li>一种查询语言，可以利用数据模型进行有效的报警和图形展示。</li>
+</ul>
+<p>但是，当时的情况是，以上的功能都分散在各个系统之中，直到 2012 年 SoundCloud 启动了一个孵化项目把这些所有功能集合到一起，也就是 Prometheus。Prometheus 是用 Go 语言编写，从一开始就是开源的，到 2016 年 Prometheus 成为继 Kubernetes 之后，成为 CNCF 的第二个成员。</p>
+<p>到现在为止 Prometheus 提供的工具或与其他生态系统组件集成可以提供完整的监控管道：</p>
+<ul>
+<li>检测（跟踪和暴露指标）</li>
+<li>指标收集</li>
+<li>指标存储</li>
+<li>查询指标，用于报警、仪表板等</li>
+</ul>
+<p>Prometheus 具有足够的通用性，可以监控各个级别的实例：你自己的应用程序、第三方服务、主机或网络设备等等。此外 Prometheus 特别适用于监控动态云环境和 Kubernetes 云原生环境。</p>
+<p>整体来说与其他监控解决方案相比，Prometheus 提供了许多重要功能：</p>
+<ul>
+<li>多维数据模型，允许对指标进行跟踪</li>
+<li>强大的查询语言（PromQL）</li>
+<li>时间序列处理和报警的整合</li>
+<li>与服务发现集成来确定应监控的内容</li>
+<li>操作简单</li>
+<li>执行高效</li>
+</ul>
+<h3 id="系统架构">系统架构</h3>
+<p>下图演示了 Prometheus 系统的整体架构</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5c20210406170610.png"
+        data-srcset=".%5cimg%5c20210406170610.png, .%5cimg%5c20210406170610.png 1.5x, .%5cimg%5c20210406170610.png 2x"
+        data-sizes="auto"
+        alt=".\img\20210406170610.png"
+        title="20210406170610" /></p>
+<p>一个团队通常会运行一个或多个 Prometheus 服务器，这些服务器构成了 Prometheus 监控的核心。Prometheus 服务器可以配置为使用服务发现机制（如 DNS、Consul、Kubernetes 等）来自动发现一组指标源（所谓的<code>目标</code>），然后 Prometheus 通过 HTTP 定期从这些目标中以<a href="https://prometheus.io/docs/instrumenting/exposition_formats/" target="_blank" rel="noopener noreffer ">文本格式</a><code>抓取</code>指标，并将收集到的数据存储在本地时序数据库中。</p>
+<p>抓取的目标可以是一个直接暴露 Prometheus 指标的应用程序，也是可以是一个将现有系统（比如 MySQL）的 metrics 指标转换为 Prometheus 指标标准格式的中间应用（也就是我们说的 <code>exporter</code>），然后 Prometheus 服务器通过其内置的 Web UI、其他仪表盘工具（比如 <a href="https://grafana.com/" target="_blank" rel="noopener noreffer ">Grafana</a>）或者直接使用其 HTTP API 来提供收集到的数据进行查询。</p>
+<p>另外我们还可以配置 Prometheus 根据收集的指标数据生成报警，但是 Prometheus 不会直接把报警通知发送给我们，而是将原始报警转发到 <code>Alertmanager</code> 服务，Alertmanager 是作为单独的服务运行的，可以从多个 Prometheus 服务器上接收报警，并可以对这些报警进行分组、汇总和路由，最后可以通过 Email、Slack、PagerDuty、企业微信、Webhook 或其他通知服务来发送通知。</p>
+<h3 id="数据模型">数据模型</h3>
+<p>Prometheus 采集的监控数据都是以指标（metric）的形式存储在内置的 TSDB 数据库中，这些数据都是<strong>时间序列</strong>：一个带时间戳的数据，这些数据具有一个标识符和一组样本值。除了存储的时间序列，Prometheus 还可以根据查询请求产生临时的、衍生的时间序列作为返回结果。</p>
+<h4 id="时间序列">时间序列</h4>
+<p>Prometheus 会将所有采集到的样本数据以时间序列的形式保存在内存数据库中，并定时刷新到硬盘上，时间序列是按照时间戳和值的序列方式存放的，我们可以称之为<strong>向量</strong>（vector），每一条时间序列都由一个<strong>指标名称</strong>和一组<strong>标签</strong>（键值对）来唯一标识。</p>
+<ul>
+<li>指标名称反映了被监控样本的含义（如 <code>http_request_total</code> 表示的是对应服务器处理的 HTTP 请求总数）。</li>
+<li>标签可以用来区分不同的维度（比如 <code>method=&quot;GET&quot;</code> 与 <code>method=&quot;POST&quot;</code> 就可以用来区分这两种不同的 HTTP 请求指标数据）。</li>
+</ul>
+<p>如下所示，可以将时间序列理解为一个以时间为 Y 轴的数字矩阵：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5cimage-20220719095605868.png"
+        data-srcset=".%5cimg%5cimage-20220719095605868.png, .%5cimg%5cimage-20220719095605868.png 1.5x, .%5cimg%5cimage-20220719095605868.png 2x"
+        data-sizes="auto"
+        alt=".\img\image-20220719095605868.png"
+        title="image-20220719095605868" /></p>
+<h4 id="样本">样本</h4>
+<p>时间序列中的每一个点就称为一个样本（sample），样本由以下 3 个部分组成：</p>
+<ul>
+<li><strong>指标</strong>：指标名称和描述当前样本特征的标签集</li>
+<li><strong>时间戳</strong>：精确到毫秒的时间戳数</li>
+<li><strong>样本值</strong>：一个 64 位浮点数</li>
+</ul>
+<h4 id="指标">指标</h4>
+<p>想要暴露 Prometheus 指标服务只需要暴露一个 HTTP 端点，并提供 Prometheus 基于文本格式的指标数据即可。这种指标格式是非常友好的，基本上的格式看起来类似于下面的这段代码：</p>
+<pre tabindex="0"><code># HELP http_requests_total The total number of processed HTTP requests.
+# TYPE http_requests_total counter
+http_requests_total{status=&#34;200&#34;} 8556
+http_requests_total{status=&#34;404&#34;} 20
+http_requests_total{status=&#34;500&#34;} 68
+</code></pre><p>其中 <code>#</code> 开头的行是注释信息，用来描述下面提供的指标含义，其他未注释行代表一个样本（带有指标名、标签和样本值），使其非常容易从系统和服务中暴露指标出来。</p>
+<p>事实上所有的指标也都是通过如下所示的格式来标识的：</p>
+<pre tabindex="0"><code>&lt;metric name&gt;{&lt;label name&gt;=&lt;label value&gt;, ...}
+</code></pre><p>例如，指标名称是 <code>http_request_total</code>，标签集为 <code>method=&quot;POST&quot;, endpoint=&quot;/messages&quot;</code>，那么我们可以用下面的方式来标识这个指标：</p>
+<pre tabindex="0"><code>http_request_total{method=&#34;POST&#34;, endpoint=&#34;/messages&#34;}
+</code></pre><p>而事实上 Prometheus 的底层实现中指标名称实际上是以 <code>__name__=&lt;metric name&gt;</code> 的形式保存在数据库中的，所以上面的指标也等同与下面的指标：</p>
+<pre tabindex="0"><code>{__name__=&#34;http_request_total&#34;, method=&#34;POST&#34;, endpoint=&#34;/messages&#34;}
+</code></pre><p>所以也可以认为一个指标就是一个标签集，只是这个标签集里面一定包含一个 <code>__name__</code> 的标签来定义这个指标的名称。</p>
+<h3 id="查询语言">查询语言</h3>
+<p>为了能够使用收集的监控数据，Prometheus 实现了自己的查询语言 PromQL。PromQL 是一种功能性的语言（类似于 SQL 语句），可以对时间序列数据进行灵活高效的计算。和类似 SQL 的语言相比，PromQL 仅用于数据读取，而不是插入、更新或者删除数据（这些操作在查询引擎之外实现的）</p>
+<p>比如下面的语句表示的是过滤所有状态码位为 <code>500</code> 的 HTTP 请求总数：</p>
+<pre tabindex="0"><code>http_requests_total{status=&#34;500&#34;}
+</code></pre><p>下面的查询语句表示每个序列在 5 分钟的时间窗口内的平均每秒增长率：</p>
+<pre tabindex="0"><code>rate(http_requests_total{status=&#34;500&#34;}[5m])
+</code></pre><p>我们还可以计算 <code>status=&quot;500&quot;</code> 错误与按 HTTP 路径分组的请求总数的比率：</p>
+<pre tabindex="0"><code>sum by(path) (rate(http_requests_total{status=&#34;500&#34;}[5m]))
+/
+sum by(path) (rate(http_requests_total[5m]))
+</code></pre><h2 id="grafana介绍">Grafana介绍</h2>
+<h3 id="基础知识-1">基础知识</h3>
+<p><a href="https://grafana.com/" target="_blank" rel="noopener noreffer ">Grafana</a> 是一个监控仪表系统，它是由 Grafana Labs 公司开源的的一个系统监测工具，它可以大大帮助我们简化监控的复杂度，我们只需要提供需要监控的数据，它就可以帮助生成各种可视化仪表，同时它还有报警功能，可以在系统出现问题时发出通知。</p>
+<p>Grafana 支持许多不同的数据源，每个数据源都有一个特定的查询编辑器，每个数据源的查询语言和能力都是不同的，我们可以把来自多个数据源的数据组合到一个仪表板，但每一个面板被绑定到一个特定的数据源。</p>
+<h3 id="部署grafana">部署grafana</h3>
+<p>使用rpm包安装：</p>
+<pre tabindex="0"><code>yum install grafana-enterprise-8.5.6-1.x86_64.rpm
+
+# 设置开机自启动grafana
+systemctl enable grafana-server
+# 启动grafana
+systemctl start grafana-server
+# 查看grafana进程状态
+systemctl status grafana-server
+</code></pre><p>有时需要重启grafana，重启命令：</p>
+<pre tabindex="0"><code>systemctl restart grafana-server
+</code></pre><p>正常启动完成后 Grafana 会监听在 3000 端口上，所以我们可以在浏览器中打开 Grafana 的 WebUI。</p>
+<p>grafana涉及到的目录有几个，最重要的是<code>/var/lib/grafana/</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5cimage-20220718101620008.png"
+        data-srcset=".%5cimg%5cimage-20220718101620008.png, .%5cimg%5cimage-20220718101620008.png 1.5x, .%5cimg%5cimage-20220718101620008.png 2x"
+        data-sizes="auto"
+        alt=".\img\image-20220718101620008.png"
+        title="image-20220718101620008" /></p>
+<p>其中<code>grafana.db</code>是grafana依赖的数据库，<em>非常重要</em>。<code>plugins</code>是插件目录。</p>
+<h3 id="安装插件">安装插件</h3>
+<p>插件下载地址：https://grafana.com/grafana/plugins/。一般来说，插件都可以在这里下载到。</p>
+<p>下载插件后，将其解压，并将解压的文件夹复制到<code>/var/lib/grafana/plugins</code>文件夹中，并重启grafana。</p>
+<h3 id="面板">面板</h3>
+<p>面板（Panel）是 Grafana 中基本可视化构建块，每个面板都有一个特定于面板中选择数据源的查询编辑器，每个面板都有各种各样的样式和格式选项，面板可以在仪表板上拖放和重新排列，它们也可以调整大小，所以要在 Grafana 上创建可视化的图表，面板是我们必须要掌握的知识点。</p>
+<p>Panel 是 Grafana 中最基本的可视化单元，每一种类型的面板都提供了相应的查询编辑器(Query Editor)，让用户可以从不同的数据源（如 Prometheus）中查询出相应的监控数据，并且以可视化的方式展现，Grafana 中所有的面板均以插件的形式进行使用。Grafana 提供了各种可视化来支持不同的用例，目前内置支持的面板包括：Time series（时间序列）是默认的也是主要的图形可视化面板、State timeline（状态时间表）状态随时间变化 、Status history（状态历史记录）、Bar chart（条形图）、Histogram（直方图）、Heatmap（热力图）、Pie chart（饼状图）、Stat（统计数据）、Gauge、Bar gauge、Table（表格）、Logs（日志）、Node Graph（节点图）、Dashboard list（仪表板列表）、Alert list（报警列表）、Text panel（文本面板，支持 markdown 和 html）、News Panel（新闻面板，可以显示 RSS 摘要）等，除此之外，我们还可以通过官网的<a href="https://grafana.com/grafana/plugins/?type=panel" target="_blank" rel="noopener noreffer ">面板插件页面</a>获取安装其他面板进行使用。</p>
+<h4 id="图表">图表</h4>
+<p>对于基于时间的折线图、面积图和条形图，我们建议使用默认的 Time series 时间序列进行可视化。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5c20211104153720.png"
+        data-srcset=".%5cimg%5c20211104153720.png, .%5cimg%5c20211104153720.png 1.5x, .%5cimg%5c20211104153720.png 2x"
+        data-sizes="auto"
+        alt=".\img\20211104153720.png"
+        title="20211104153720" /></p>
+<p>而对于分类数据，则使用 Bar Chart 条形图可视化。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5c20211104153803.png"
+        data-srcset=".%5cimg%5c20211104153803.png, .%5cimg%5c20211104153803.png 1.5x, .%5cimg%5c20211104153803.png 2x"
+        data-sizes="auto"
+        alt=".\img\20211104153803.png"
+        title="20211104153803" /></p>
+<h4 id="数据统计">数据统计</h4>
+<p>用于数据统计相关的可视化可以使用 <code>Stat</code> 面板进行可视化，我们可以使用阈值或色标来控制背景或值颜色。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5c20211104153940.png"
+        data-srcset=".%5cimg%5c20211104153940.png, .%5cimg%5c20211104153940.png 1.5x, .%5cimg%5c20211104153940.png 2x"
+        data-sizes="auto"
+        alt=".\img\20211104153940.png"
+        title="20211104153940" /></p>
+<h4 id="仪表盘">仪表盘</h4>
+<p>如果想显示与最小值和最大值相关的值，则有两个选择，首先是如下所示的标准径 Gauge 面板。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5c20211104154049.png"
+        data-srcset=".%5cimg%5c20211104154049.png, .%5cimg%5c20211104154049.png 1.5x, .%5cimg%5c20211104154049.png 2x"
+        data-sizes="auto"
+        alt=".\img\20211104154049.png"
+        title="20211104154049" /></p>
+<p>其次 Grafana 还具有水平或垂直 Bar gauge（条形仪表面板），具有三种不同的不同显示模式。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5c20211104154147.png"
+        data-srcset=".%5cimg%5c20211104154147.png, .%5cimg%5c20211104154147.png 1.5x, .%5cimg%5c20211104154147.png 2x"
+        data-sizes="auto"
+        alt=".\img\20211104154147.png"
+        title="20211104154147" /></p>
+<h4 id="表格">表格</h4>
+<p>要在表格布局中显示数据，需要使用 Table 表格面板进行可视化。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5c20211104154332.png"
+        data-srcset=".%5cimg%5c20211104154332.png, .%5cimg%5c20211104154332.png 1.5x, .%5cimg%5c20211104154332.png 2x"
+        data-sizes="auto"
+        alt=".\img\20211104154332.png"
+        title="20211104154332" /></p>
+<h4 id="饼状图">饼状图</h4>
+<p>Grafana 现在支持 Pie Chart 饼状图面板可视化。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5c20211104154624.png"
+        data-srcset=".%5cimg%5c20211104154624.png, .%5cimg%5c20211104154624.png 1.5x, .%5cimg%5c20211104154624.png 2x"
+        data-sizes="auto"
+        alt=".\img\20211104154624.png"
+        title="20211104154624" /></p>
+<h3 id="配置数据源">配置数据源</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5cimage-20220718102351947.png"
+        data-srcset=".%5cimg%5cimage-20220718102351947.png, .%5cimg%5cimage-20220718102351947.png 1.5x, .%5cimg%5cimage-20220718102351947.png 2x"
+        data-sizes="auto"
+        alt=".\img\image-20220718102351947.png"
+        title="image-20220718102351947" /></p>
+<p>然后根据数据源类型选择，不同数据源类型的配置方法有所不同。</p>
+<h3 id="配置查询语句">配置查询语句</h3>
+<p>配置grafana报表需要数据源查询语句，包括：</p>
+<ul>
+<li>
+<p>prometheus：PromQL，参考网址：https://doc.cncf.vip/prometheus-handbook/parti-prometheus-ji-chu/promql。Prometheus常用来监控PaaS组件。</p>
+</li>
+<li>
+<p>ES：使用Lucene查询语句，参考网址：https://lucene.apache.org/core/3_0_3/queryparsersyntax.html。ES常用来查询日志等文本数据。</p>
+</li>
+<li>
+<p>mysql：SQl查询语句</p>
+</li>
+<li>
+<p>zabbix：IaaS监控工具，可以选择监控项。</p>
+</li>
+</ul>
+<h2 id="prometheus优化架构">prometheus优化架构</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src=".%5cimg%5cprometheus%e6%9e%b6%e6%9e%84.png"
+        data-srcset=".%5cimg%5cprometheus%e6%9e%b6%e6%9e%84.png, .%5cimg%5cprometheus%e6%9e%b6%e6%9e%84.png 1.5x, .%5cimg%5cprometheus%e6%9e%b6%e6%9e%84.png 2x"
+        data-sizes="auto"
+        alt=".\img\prometheus架构.png"
+        title="prometheus架构" /></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-08-05</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="http://lynn404.com/posts/prometheus/" data-title="Prometheus" data-hashtags="prometheus,grafana"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://lynn404.com/posts/prometheus/" data-hashtag="prometheus"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://lynn404.com/posts/prometheus/" data-title="Prometheus"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://lynn404.com/posts/prometheus/" data-title="Prometheus"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://lynn404.com/posts/prometheus/" data-title="Prometheus"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/prometheus/">prometheus</a>,&nbsp;<a href="/tags/grafana/">grafana</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.101.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Lynn</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

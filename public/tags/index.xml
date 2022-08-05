@@ -3,5 +3,21 @@
         <title>Tags - Tag - Lynn的技术随笔</title>
         <link>http://lynn404.com/tags/</link>
         <description>Tags - Tag - Lynn的技术随笔</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="http://lynn404.com/tags/" rel="self" type="application/rss+xml" /></channel>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 05 Aug 2022 23:58:37 &#43;0800</lastBuildDate><atom:link href="http://lynn404.com/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>grafana</title>
+    <link>http://lynn404.com/tags/grafana/</link>
+    <pubDate>Fri, 05 Aug 2022 23:58:37 &#43;0800</pubDate>
+    <author>Lynn</author>
+    <guid>http://lynn404.com/tags/grafana/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>prometheus</title>
+    <link>http://lynn404.com/tags/prometheus/</link>
+    <pubDate>Fri, 05 Aug 2022 23:58:37 &#43;0800</pubDate>
+    <author>Lynn</author>
+    <guid>http://lynn404.com/tags/prometheus/</guid>
+    <description><![CDATA[]]></description>
+</item>
+</channel>
 </rss>

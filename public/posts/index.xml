@@ -3,13 +3,13 @@
         <title>All Posts - Lynn的技术随笔</title>
         <link>http://lynn404.com/posts/</link>
         <description>All Posts | Lynn的技术随笔</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 31 Jul 2022 00:42:48 &#43;0800</lastBuildDate><atom:link href="http://lynn404.com/posts/" rel="self" type="application/rss+xml" /><item>
-    <title>First</title>
-    <link>http://lynn404.com/posts/first/</link>
-    <pubDate>Sun, 31 Jul 2022 00:42:48 &#43;0800</pubDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 05 Aug 2022 23:58:37 &#43;0800</lastBuildDate><atom:link href="http://lynn404.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Prometheus</title>
+    <link>http://lynn404.com/posts/prometheus/</link>
+    <pubDate>Fri, 05 Aug 2022 23:58:37 &#43;0800</pubDate>
     <author>Lynn</author>
-    <guid>http://lynn404.com/posts/first/</guid>
-    <description><![CDATA[博客测试]]></description>
+    <guid>http://lynn404.com/posts/prometheus/</guid>
+    <description><![CDATA[Prometheus&amp;Grafana介绍 Prometheus介绍 基础知识 概述 Prometheus 是一个监控系统和时序数据库，特别适合监控云原生环境，它]]></description>
 </item>
 </channel>
 </rss>

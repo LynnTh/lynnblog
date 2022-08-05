@@ -1,11 +1,9 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Lynn的技术随笔</title>
-        <link>http://lynn404.com/</link>
-        <description>养猫人</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 05 Aug 2022 23:58:37 &#43;0800</lastBuildDate>
-            <atom:link href="http://lynn404.com/index.xml" rel="self" type="application/rss+xml" />
-        <item>
+        <title>monitor - Category - Lynn的技术随笔</title>
+        <link>http://lynn404.com/categories/monitor/</link>
+        <description>monitor - Category - Lynn的技术随笔</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 05 Aug 2022 23:58:37 &#43;0800</lastBuildDate><atom:link href="http://lynn404.com/categories/monitor/" rel="self" type="application/rss+xml" /><item>
     <title>Prometheus</title>
     <link>http://lynn404.com/posts/prometheus/</link>
     <pubDate>Fri, 05 Aug 2022 23:58:37 &#43;0800</pubDate>
