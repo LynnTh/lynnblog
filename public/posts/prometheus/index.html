@@ -168,10 +168,10 @@
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5c20210406170610.png"
-        data-srcset=".%5cimg%5c20210406170610.png, .%5cimg%5c20210406170610.png 1.5x, .%5cimg%5c20210406170610.png 2x"
+        data-src="./20210406170610.png"
+        data-srcset="./20210406170610.png, ./20210406170610.png 1.5x, ./20210406170610.png 2x"
         data-sizes="auto"
-        alt=".\img\20210406170610.png"
+        alt="./20210406170610.png"
         title="20210406170610" /></p>
 <p>一个团队通常会运行一个或多个 Prometheus 服务器，这些服务器构成了 Prometheus 监控的核心。Prometheus 服务器可以配置为使用服务发现机制（如 DNS、Consul、Kubernetes 等）来自动发现一组指标源（所谓的<code>目标</code>），然后 Prometheus 通过 HTTP 定期从这些目标中以<a href="https://prometheus.io/docs/instrumenting/exposition_formats/" target="_blank" rel="noopener noreffer ">文本格式</a><code>抓取</code>指标，并将收集到的数据存储在本地时序数据库中。</p>
 <p>抓取的目标可以是一个直接暴露 Prometheus 指标的应用程序，也是可以是一个将现有系统（比如 MySQL）的 metrics 指标转换为 Prometheus 指标标准格式的中间应用（也就是我们说的 <code>exporter</code>），然后 Prometheus 服务器通过其内置的 Web UI、其他仪表盘工具（比如 <a href="https://grafana.com/" target="_blank" rel="noopener noreffer ">Grafana</a>）或者直接使用其 HTTP API 来提供收集到的数据进行查询。</p>
@@ -188,10 +188,10 @@
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5cimage-20220719095605868.png"
-        data-srcset=".%5cimg%5cimage-20220719095605868.png, .%5cimg%5cimage-20220719095605868.png 1.5x, .%5cimg%5cimage-20220719095605868.png 2x"
+        data-src="./image-20220719095605868.png"
+        data-srcset="./image-20220719095605868.png, ./image-20220719095605868.png 1.5x, ./image-20220719095605868.png 2x"
         data-sizes="auto"
-        alt=".\img\image-20220719095605868.png"
+        alt="./image-20220719095605868.png"
         title="image-20220719095605868" /></p>
 <h4 id="样本">样本</h4>
 <p>时间序列中的每一个点就称为一个样本（sample），样本由以下 3 个部分组成：</p>
@@ -246,10 +246,10 @@ systemctl status grafana-server
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5cimage-20220718101620008.png"
-        data-srcset=".%5cimg%5cimage-20220718101620008.png, .%5cimg%5cimage-20220718101620008.png 1.5x, .%5cimg%5cimage-20220718101620008.png 2x"
+        data-src="./image-20220718101620008.png"
+        data-srcset="./image-20220718101620008.png, ./image-20220718101620008.png 1.5x, ./image-20220718101620008.png 2x"
         data-sizes="auto"
-        alt=".\img\image-20220718101620008.png"
+        alt="./image-20220718101620008.png"
         title="image-20220718101620008" /></p>
 <p>其中<code>grafana.db</code>是grafana依赖的数据库，<em>非常重要</em>。<code>plugins</code>是插件目录。</p>
 <h3 id="安装插件">安装插件</h3>
@@ -263,77 +263,77 @@ systemctl status grafana-server
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5c20211104153720.png"
-        data-srcset=".%5cimg%5c20211104153720.png, .%5cimg%5c20211104153720.png 1.5x, .%5cimg%5c20211104153720.png 2x"
+        data-src="./20211104153720.png"
+        data-srcset="./20211104153720.png, ./20211104153720.png 1.5x, ./20211104153720.png 2x"
         data-sizes="auto"
-        alt=".\img\20211104153720.png"
+        alt="./20211104153720.png"
         title="20211104153720" /></p>
 <p>而对于分类数据，则使用 Bar Chart 条形图可视化。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5c20211104153803.png"
-        data-srcset=".%5cimg%5c20211104153803.png, .%5cimg%5c20211104153803.png 1.5x, .%5cimg%5c20211104153803.png 2x"
+        data-src="./20211104153803.png"
+        data-srcset="./20211104153803.png, ./20211104153803.png 1.5x, ./20211104153803.png 2x"
         data-sizes="auto"
-        alt=".\img\20211104153803.png"
+        alt="./20211104153803.png"
         title="20211104153803" /></p>
 <h4 id="数据统计">数据统计</h4>
 <p>用于数据统计相关的可视化可以使用 <code>Stat</code> 面板进行可视化，我们可以使用阈值或色标来控制背景或值颜色。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5c20211104153940.png"
-        data-srcset=".%5cimg%5c20211104153940.png, .%5cimg%5c20211104153940.png 1.5x, .%5cimg%5c20211104153940.png 2x"
+        data-src="./20211104153940.png"
+        data-srcset="./20211104153940.png, ./20211104153940.png 1.5x, ./20211104153940.png 2x"
         data-sizes="auto"
-        alt=".\img\20211104153940.png"
+        alt="./20211104153940.png"
         title="20211104153940" /></p>
 <h4 id="仪表盘">仪表盘</h4>
 <p>如果想显示与最小值和最大值相关的值，则有两个选择，首先是如下所示的标准径 Gauge 面板。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5c20211104154049.png"
-        data-srcset=".%5cimg%5c20211104154049.png, .%5cimg%5c20211104154049.png 1.5x, .%5cimg%5c20211104154049.png 2x"
+        data-src="./20211104154049.png"
+        data-srcset="./20211104154049.png, ./20211104154049.png 1.5x, ./20211104154049.png 2x"
         data-sizes="auto"
-        alt=".\img\20211104154049.png"
+        alt="./20211104154049.png"
         title="20211104154049" /></p>
 <p>其次 Grafana 还具有水平或垂直 Bar gauge（条形仪表面板），具有三种不同的不同显示模式。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5c20211104154147.png"
-        data-srcset=".%5cimg%5c20211104154147.png, .%5cimg%5c20211104154147.png 1.5x, .%5cimg%5c20211104154147.png 2x"
+        data-src="./20211104154147.png"
+        data-srcset="./20211104154147.png, ./20211104154147.png 1.5x, ./20211104154147.png 2x"
         data-sizes="auto"
-        alt=".\img\20211104154147.png"
+        alt="./20211104154147.png"
         title="20211104154147" /></p>
 <h4 id="表格">表格</h4>
 <p>要在表格布局中显示数据，需要使用 Table 表格面板进行可视化。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5c20211104154332.png"
-        data-srcset=".%5cimg%5c20211104154332.png, .%5cimg%5c20211104154332.png 1.5x, .%5cimg%5c20211104154332.png 2x"
+        data-src="./20211104154332.png"
+        data-srcset="./20211104154332.png, ./20211104154332.png 1.5x, ./20211104154332.png 2x"
         data-sizes="auto"
-        alt=".\img\20211104154332.png"
+        alt="./20211104154332.png"
         title="20211104154332" /></p>
 <h4 id="饼状图">饼状图</h4>
 <p>Grafana 现在支持 Pie Chart 饼状图面板可视化。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5c20211104154624.png"
-        data-srcset=".%5cimg%5c20211104154624.png, .%5cimg%5c20211104154624.png 1.5x, .%5cimg%5c20211104154624.png 2x"
+        data-src="./20211104154624.png"
+        data-srcset="./20211104154624.png, ./20211104154624.png 1.5x, ./20211104154624.png 2x"
         data-sizes="auto"
-        alt=".\img\20211104154624.png"
+        alt="./20211104154624.png"
         title="20211104154624" /></p>
 <h3 id="配置数据源">配置数据源</h3>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5cimage-20220718102351947.png"
-        data-srcset=".%5cimg%5cimage-20220718102351947.png, .%5cimg%5cimage-20220718102351947.png 1.5x, .%5cimg%5cimage-20220718102351947.png 2x"
+        data-src="./image-20220718102351947.png"
+        data-srcset="./image-20220718102351947.png, ./image-20220718102351947.png 1.5x, ./image-20220718102351947.png 2x"
         data-sizes="auto"
-        alt=".\img\image-20220718102351947.png"
+        alt="./image-20220718102351947.png"
         title="image-20220718102351947" /></p>
 <p>然后根据数据源类型选择，不同数据源类型的配置方法有所不同。</p>
 <h3 id="配置查询语句">配置查询语句</h3>
@@ -356,10 +356,10 @@ systemctl status grafana-server
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src=".%5cimg%5cprometheus%e6%9e%b6%e6%9e%84.png"
-        data-srcset=".%5cimg%5cprometheus%e6%9e%b6%e6%9e%84.png, .%5cimg%5cprometheus%e6%9e%b6%e6%9e%84.png 1.5x, .%5cimg%5cprometheus%e6%9e%b6%e6%9e%84.png 2x"
+        data-src="./prometheus%e6%9e%b6%e6%9e%84.png"
+        data-srcset="./prometheus%e6%9e%b6%e6%9e%84.png, ./prometheus%e6%9e%b6%e6%9e%84.png 1.5x, ./prometheus%e6%9e%b6%e6%9e%84.png 2x"
         data-sizes="auto"
-        alt=".\img\prometheus架构.png"
+        alt="./prometheus架构.png"
         title="prometheus架构" /></p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
