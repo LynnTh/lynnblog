@@ -3,7 +3,15 @@
         <title>Categories - Category - Lynn的技术随笔</title>
         <link>http://lynn404.com/categories/</link>
         <description>Categories - Category - Lynn的技术随笔</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 05 Aug 2022 23:58:37 &#43;0800</lastBuildDate><atom:link href="http://lynn404.com/categories/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 25 Oct 2022 21:53:11 &#43;0800</lastBuildDate><atom:link href="http://lynn404.com/categories/" rel="self" type="application/rss+xml" /><item>
+    <title>kubernetes</title>
+    <link>http://lynn404.com/categories/kubernetes/</link>
+    <pubDate>Tue, 25 Oct 2022 21:53:11 &#43;0800</pubDate>
+    <author>Lynn</author>
+    <guid>http://lynn404.com/categories/kubernetes/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>monitor</title>
     <link>http://lynn404.com/categories/monitor/</link>
     <pubDate>Fri, 05 Aug 2022 23:58:37 &#43;0800</pubDate>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>在Kubernetes中使用client-go做Leader election - Lynn的技术随笔</title><meta name="Description" content="养猫人"><meta property="og:title" content="在Kubernetes中使用client-go做Leader election" />
+<meta property="og:description" content="简介 近年来，随着对可靠的系统和基础设施的需求增加，&ldquo;高可用性 &ldquo;这个词也越来越受欢迎。在分布式系统中，高可用性通常是指" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://lynn404.com/posts/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-10-25T21:46:00+08:00" />
+<meta property="article:modified_time" content="2022-10-25T21:46:00+08:00" /><meta property="og:site_name" content="Lynn的技术随笔" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="在Kubernetes中使用client-go做Leader election"/>
+<meta name="twitter:description" content="简介 近年来，随着对可靠的系统和基础设施的需求增加，&ldquo;高可用性 &ldquo;这个词也越来越受欢迎。在分布式系统中，高可用性通常是指"/>
+<meta name="application-name" content="Lynn的技术随笔">
+<meta name="apple-mobile-web-app-title" content="Lynn的技术随笔"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://lynn404.com/posts/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election/" /><link rel="prev" href="http://lynn404.com/posts/prometheus/" /><link rel="next" href="http://lynn404.com/posts/oci-%E5%92%8C-runc%E5%AE%B9%E5%99%A8%E6%A0%87%E5%87%86%E5%8C%96%E5%92%8C-docker%E8%BD%AC%E8%BD%BD/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "在Kubernetes中使用client-go做Leader election",
+        "inLanguage": "zh-cn",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/lynn404.com\/posts\/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election\/"
+        },"genre": "posts","keywords": "kubernetes, client-go","wordcount":  2251 ,
+        "url": "http:\/\/lynn404.com\/posts\/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election\/","datePublished": "2022-10-25T21:46:00+08:00","dateModified": "2022-10-25T21:46:00+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Lynn"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Lynn的技术随笔">Lynn的技术随笔</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Lynn的技术随笔">Lynn的技术随笔</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">在Kubernetes中使用client-go做Leader election</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Lynn</a></span>&nbsp;<span class="post-category">included in <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>kubernetes</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-10-25">2022-10-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2251 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;5 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#kubernetes中的leader-election">Kubernetes中的Leader election</a></li>
+    <li><a href="#探究代码">探究代码</a></li>
+    <li><a href="#乐观锁并发控制">乐观锁（并发控制）</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./kubernetes-horizontal-color.png"
+        data-srcset="./kubernetes-horizontal-color.png, ./kubernetes-horizontal-color.png 1.5x, ./kubernetes-horizontal-color.png 2x"
+        data-sizes="auto"
+        alt="./kubernetes-horizontal-color.png"
+        title="./kubernetes-horizontal-color.png" /></p>
+<h2 id="简介">简介</h2>
+<p>近年来，随着对可靠的系统和基础设施的需求增加，&ldquo;高可用性 &ldquo;这个词也越来越受欢迎。在分布式系统中，高可用性通常是指最大限度地延长正常运行时间和使系统具有容错性。在高可用性中，一个常见的做法是使用冗余来减少单点故障。准备你的系统和服务的冗余可能很简单，只是在负载平衡器后面部署更多的副本。虽然这样的配置对许多应用来说是可行的，但有些使用情况需要仔细协调各副本，以使系统正常工作。</p>
+<p>一个很好的例子是，当一个[[Kubernetes]]控制器被部署为多个实例时。为了防止任何意外的行为，领导者选举过程必须确保在副本中选出一个领导者，并且是唯一一个积极协调集群的人。其他的实例应该保持不活动，但准备在领导者实例失败时接管。</p>
+<h2 id="kubernetes中的leader-election">Kubernetes中的Leader election</h2>
+<p>Kubernetes中的领导者选举过程很简单。它从创建一个锁对象开始，领导者定期更新当前的时间戳，作为通知其他副本其领导地位的一种方式。这个锁对象可以是Lease、ConfigMap或Endpoint，也持有当前领导者的身份。如果领导者未能在给定的时间间隔内更新时间戳，就会被认为是崩溃了，这时不活跃的副本就会通过更新锁的身份来争夺领导权。成功获得锁的Pod将成为新的领导者。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./1_ea0yTtafuGKug1JdcN1YGg.png"
+        data-srcset="./1_ea0yTtafuGKug1JdcN1YGg.png, ./1_ea0yTtafuGKug1JdcN1YGg.png 1.5x, ./1_ea0yTtafuGKug1JdcN1YGg.png 2x"
+        data-sizes="auto"
+        alt="./1_ea0yTtafuGKug1JdcN1YGg.png"
+        title="./1_ea0yTtafuGKug1JdcN1YGg.png" /></p>
+<p>我们将使用的示例应用程序可以在<a href="https://github.com/LynnTh/k8s-leader-election" target="_blank" rel="noopener noreffer ">这里</a>找到。它使用kubernetes/client-go来进行领袖选举。让我们在我们的集群上安装该应用程序。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Setup required permissions for creating/getting Lease objects  </span>
+</span></span><span class="line"><span class="cl">$ kubectl apply -f rbac.yaml  
+</span></span><span class="line"><span class="cl">serviceaccount/leaderelection-sa created  
+</span></span><span class="line"><span class="cl">role.rbac.authorization.k8s.io/leaderelection-role created  
+</span></span><span class="line"><span class="cl">rolebinding.rbac.authorization.k8s.io/leaderelection-rolebinding created# Create deployment  
+</span></span><span class="line"><span class="cl">$ kubectl apply -f deploy.yaml  
+</span></span><span class="line"><span class="cl">deployment.apps/leaderelection created
+</span></span></code></pre></div><p>这应该创建一个有3个pod（副本）的部署。如果你等待几秒钟，你应该看到它们处于运行状态。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">❯ kubectl get pods  
+</span></span><span class="line"><span class="cl">NAME READY STATUS RESTARTS AGE  
+</span></span><span class="line"><span class="cl">leaderelection-6d5b456c9d-cfd2l 1/1 Running <span class="m">0</span> 19s  
+</span></span><span class="line"><span class="cl">leaderelection-6d5b456c9d-n2kx2 1/1 Running <span class="m">0</span> 19s  
+</span></span><span class="line"><span class="cl">leaderelection-6d5b456c9d-ph8nj 1/1 Running <span class="m">0</span> 19s
+</span></span></code></pre></div><p>一旦有你的pod运行，让我们试着查看他们创建的<code>Lease</code>锁对象，作为领导者选举过程的一部分。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl describe lease my-leaseName:         my-lease  
+</span></span><span class="line"><span class="cl">Namespace:    default  
+</span></span><span class="line"><span class="cl">Labels:       &lt;none&gt;  
+</span></span><span class="line"><span class="cl">Annotations:  &lt;none&gt;  
+</span></span><span class="line"><span class="cl">API Version:  coordination.k8s.io/v1  
+</span></span><span class="line"><span class="cl">Kind:         Lease  
+</span></span><span class="line"><span class="cl">Metadata:  
+</span></span><span class="line"><span class="cl">...  
+</span></span><span class="line"><span class="cl">Spec:  
+</span></span><span class="line"><span class="cl">  Acquire Time:            2021-10-23T06:51:50.605570Z  
+</span></span><span class="line"><span class="cl">  Holder Identity:         leaderelection-56457b6c5c-fn725  
+</span></span><span class="line"><span class="cl">  Lease Duration Seconds:  <span class="m">15</span>  
+</span></span><span class="line"><span class="cl">  Lease Transitions:       <span class="m">0</span>  
+</span></span><span class="line"><span class="cl">  Renew Time:              2021-10-23T06:52:45.309478Z
+</span></span></code></pre></div><p>根据这一点，我们当前的Leader Pod是<code>leaderelection-56457bc5c-fn725</code> 。让我们通过查看我们的pod日志来验证这一点。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># leader pod  </span>
+</span></span><span class="line"><span class="cl">$ kubectl logs leaderelection-56457b6c5c-fn725I1023 06:51:50.605439       <span class="m">1</span> leaderelection.go:248<span class="o">]</span> attempting to acquire leader lease default/my-lease...  
+</span></span><span class="line"><span class="cl">I1023 06:51:50.630111       <span class="m">1</span> leaderelection.go:258<span class="o">]</span> successfully acquired lease default/my-lease  
+</span></span><span class="line"><span class="cl">I1023 06:51:50.630141       <span class="m">1</span> main.go:57<span class="o">]</span> still the leader!  
+</span></span><span class="line"><span class="cl">I1023 06:51:50.630245       <span class="m">1</span> main.go:36<span class="o">]</span> doing stuff...# inactive pods  
+</span></span><span class="line"><span class="cl">$ kubectl logs leaderelection-56457b6c5c-n857k  
+</span></span><span class="line"><span class="cl">I1023 06:51:55.400797       <span class="m">1</span> leaderelection.go:248<span class="o">]</span> attempting to acquire leader lease default/my-lease...  
+</span></span><span class="line"><span class="cl">I1023 06:51:55.412780       <span class="m">1</span> main.go:60<span class="o">]</span> new leader is %sleaderelection-56457b6c5c-fn725# inactive pod  
+</span></span><span class="line"><span class="cl">$ kubectl logs leaderelection-56457b6c5c-s48kx  
+</span></span><span class="line"><span class="cl">I1023 06:51:52.905451       <span class="m">1</span> leaderelection.go:248<span class="o">]</span> attempting to acquire leader lease default/my-lease...  
+</span></span><span class="line"><span class="cl">I1023 06:51:52.915618       <span class="m">1</span> main.go:60<span class="o">]</span> new leader is %sleaderelection-56457b6c5c-fn725
+</span></span></code></pre></div><p>试着删除Leader Pod以模拟崩溃，并检查Lease对象是否有新的领袖被选出。</p>
+<h2 id="探究代码">探究代码</h2>
+<blockquote>
+<p>应用程序的代码在<a href="https://github.com/LynnTh/k8s-leader-election" target="_blank" rel="noopener noreffer ">这里</a>。</p>
+</blockquote>
+<p>这里的基本思想是使用分布式锁机制来决定哪个进程成为领导者。获得锁的进程就可以执行所需的任务。主要功能是进入我们的应用程序。在这里，我们创建一个对锁对象的引用，并开始一个领导者选举循环。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">leaseLockName</span>      <span class="kt">string</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">leaseLockNamespace</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">podName</span>            <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;POD_NAME&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">flag</span><span class="p">.</span><span class="nf">StringVar</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">leaseLockName</span><span class="p">,</span> <span class="s">&#34;lease-name&#34;</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="s">&#34;Name of lease lock&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">flag</span><span class="p">.</span><span class="nf">StringVar</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">leaseLockNamespace</span><span class="p">,</span> <span class="s">&#34;lease-namespace&#34;</span><span class="p">,</span> <span class="s">&#34;default&#34;</span><span class="p">,</span> <span class="s">&#34;Name of lease lock namespace&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">flag</span><span class="p">.</span><span class="nf">Parse</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">leaseLockName</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">klog</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="s">&#34;missing lease-name flag&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">leaseLockNamespace</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">klog</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="s">&#34;missing lease-namespace flag&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">config</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">rest</span><span class="p">.</span><span class="nf">InClusterConfig</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">client</span> <span class="p">=</span> <span class="nx">clientset</span><span class="p">.</span><span class="nf">NewForConfigOrDie</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">klog</span><span class="p">.</span><span class="nf">Fatalf</span><span class="p">(</span><span class="s">&#34;failed to get kubeconfig&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">ctx</span><span class="p">,</span> <span class="nx">cancel</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithCancel</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nf">cancel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">lock</span> <span class="o">:=</span> <span class="nf">getNewLock</span><span class="p">(</span><span class="nx">leaseLockName</span><span class="p">,</span> <span class="nx">podName</span><span class="p">,</span> <span class="nx">leaseLockNamespace</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">runLeaderElection</span><span class="p">(</span><span class="nx">lock</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">podName</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>我们首先解析<code>lease-name</code>和<code>lease-namespace</code>标志，以获得必须由副本使用的锁对象的名称和命名空间。<code>POD_NAME</code>环境变量的值（在deploy.yaml清单中填充）将被用于识别<code>Lease</code>对象中的领导者。最后，我们使用这些参数创建一个锁对象，以启动一个领导者选举过程。</p>
+<p><code>runLeaderElection</code>函数是我们通过调用<code>RunOrDie</code>来启动领导者选举循环的地方。我们向它传递一个<code>LeaderElectionConfig</code>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">runLeaderElection</span><span class="p">(</span><span class="nx">lock</span> <span class="o">*</span><span class="nx">resourcelock</span><span class="p">.</span><span class="nx">LeaseLock</span><span class="p">,</span> <span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">id</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">leaderelection</span><span class="p">.</span><span class="nf">RunOrDie</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">leaderelection</span><span class="p">.</span><span class="nx">LeaderElectionConfig</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Lock</span><span class="p">:</span>            <span class="nx">lock</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ReleaseOnCancel</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">LeaseDuration</span><span class="p">:</span>   <span class="mi">15</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">RenewDeadline</span><span class="p">:</span>   <span class="mi">10</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">RetryPeriod</span><span class="p">:</span>     <span class="mi">2</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Callbacks</span><span class="p">:</span> <span class="nx">leaderelection</span><span class="p">.</span><span class="nx">LeaderCallbacks</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">OnStartedLeading</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nf">doStuff</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">			<span class="p">},</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">OnStoppedLeading</span><span class="p">:</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">klog</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;no longer the leader, staying inactive.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">},</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">OnNewLeader</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">current_id</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">if</span> <span class="nx">current_id</span> <span class="o">==</span> <span class="nx">id</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">klog</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;still the leader!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">					<span class="k">return</span>
+</span></span><span class="line"><span class="cl">				<span class="p">}</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">klog</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;new leader is %s&#34;</span><span class="p">,</span> <span class="nx">current_id</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">},</span>
+</span></span><span class="line"><span class="cl">		<span class="p">},</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>现在，让我们来看看<code>RunOrDie</code>在client-go中的实现。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// RunOrDie starts a client with the provided config or panics if the config
+</span></span></span><span class="line"><span class="cl"><span class="c1">// fails to validate. RunOrDie blocks until leader election loop is
+</span></span></span><span class="line"><span class="cl"><span class="c1">// stopped by ctx or it has stopped holding the leader lease
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">RunOrDie</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">lec</span> <span class="nx">LeaderElectionConfig</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">le</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">NewLeaderElector</span><span class="p">(</span><span class="nx">lec</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">lec</span><span class="p">.</span><span class="nx">WatchDog</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">lec</span><span class="p">.</span><span class="nx">WatchDog</span><span class="p">.</span><span class="nf">SetLeaderElection</span><span class="p">(</span><span class="nx">le</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">le</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>它使用我们传递给它的<code>LeaderElectorConfig</code>创建一个<code>*LeaderElector</code>，并对它调用<code>Run</code>方法。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Run starts the leader election loop. Run will not return
+</span></span></span><span class="line"><span class="cl"><span class="c1">// before leader election loop is stopped by ctx or it has
+</span></span></span><span class="line"><span class="cl"><span class="c1">// stopped holding the leader lease
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">le</span> <span class="o">*</span><span class="nx">LeaderElector</span><span class="p">)</span> <span class="nf">Run</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nx">runtime</span><span class="p">.</span><span class="nf">HandleCrash</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">le</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">Callbacks</span><span class="p">.</span><span class="nf">OnStoppedLeading</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">!</span><span class="nx">le</span><span class="p">.</span><span class="nf">acquire</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="c1">// ctx signalled done
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ctx</span><span class="p">,</span> <span class="nx">cancel</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithCancel</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nf">cancel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">go</span> <span class="nx">le</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">Callbacks</span><span class="p">.</span><span class="nf">OnStartedLeading</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">le</span><span class="p">.</span><span class="nf">renew</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>该方法负责运行领导者选举循环。它首先尝试获取锁（使用<code>le.acquisition</code>）。一旦成功，它就运行我们之前配置的<code>OnStartedLeading</code>回调，并定期更新<code>Lease</code>。如果不能获得锁，它就简单地运行<code>OnStoppedLeading</code>回调并返回。</p>
+<p><a href="https://github.com/kubernetes/client-go/blob/56656ba0e04ff501549162385908f5b7d14f5dc8/tools/leaderelection/leaderelection.go#L243" target="_blank" rel="noopener noreffer ">acquire</a>和<a href="https://github.com/kubernetes/client-go/blob/56656ba0e04ff501549162385908f5b7d14f5dc8/tools/leaderelection/leaderelection.go#L265" target="_blank" rel="noopener noreffer ">renew</a>的实现中最重要的部分是对<a href="https://github.com/kubernetes/client-go/blob/56656ba0e04ff501549162385908f5b7d14f5dc8/tools/leaderelection/leaderelection.go#L317" target="_blank" rel="noopener noreffer ">tryAcquireOrRenew</a>的调用，它拥有锁机制的核心逻辑。</p>
+<h2 id="乐观锁并发控制">乐观锁（并发控制）</h2>
+<p>领导者选举过程利用了Kubernetes操作的原子性，以确保没有两个副本可以同时获得租约（否则可能导致竞态条件和其他意外行为！）。任何时候Lease被更新（更新或获取），它的资源版本字段也会被Kubernetes更新。当另一个进程试图同时更新Lease时，Kubernetes会检查更新对象的资源版本字段是否与当前对象相匹配——如果不匹配，则更新失败，从而避免并发问题。</p>
+<h2 id="总结">总结</h2>
+<p>在这篇文章中，我们讨论了领导者选举，以及为什么它对分布式系统的高可用性至关重要。我们看了一下这在Kubernetes中是如何使用Lease锁实现的，并尝试使用kubernetes/client-go库在我们自己身上实现它。此外，我们还试图了解Kubernetes如何使用原子操作和乐观锁的方法来防止并发造成的问题。</p>
+<blockquote>
+<p>还请注意，这篇文章中使用的代码并不是一个可用于生产的解决方案，写这些代码是为了以一种简单的方式演示领导人的选举!</p>
+</blockquote>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-10-25</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="http://lynn404.com/posts/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election/" data-title="在Kubernetes中使用client-go做Leader election" data-hashtags="kubernetes,client-go"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://lynn404.com/posts/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election/" data-hashtag="kubernetes"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://lynn404.com/posts/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election/" data-title="在Kubernetes中使用client-go做Leader election"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://lynn404.com/posts/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election/" data-title="在Kubernetes中使用client-go做Leader election"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://lynn404.com/posts/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election/" data-title="在Kubernetes中使用client-go做Leader election"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/kubernetes/">kubernetes</a>,&nbsp;<a href="/tags/client-go/">client-go</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/prometheus/" class="prev" rel="prev" title="Prometheus"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Prometheus</a>
+            <a href="/posts/oci-%E5%92%8C-runc%E5%AE%B9%E5%99%A8%E6%A0%87%E5%87%86%E5%8C%96%E5%92%8C-docker%E8%BD%AC%E8%BD%BD/" class="next" rel="next" title="OCI 和 Runc：容器标准化和 Docker【转载】">OCI 和 Runc：容器标准化和 Docker【转载】<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.101.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Lynn</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

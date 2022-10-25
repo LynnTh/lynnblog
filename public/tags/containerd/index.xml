@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>containerd - Tag - Lynn的技术随笔</title>
+        <link>http://lynn404.com/tags/containerd/</link>
+        <description>containerd - Tag - Lynn的技术随笔</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 25 Oct 2022 21:53:11 &#43;0800</lastBuildDate><atom:link href="http://lynn404.com/tags/containerd/" rel="self" type="application/rss+xml" /><item>
+    <title>OCI 和 Runc：容器标准化和 Docker【转载】</title>
+    <link>http://lynn404.com/posts/oci-%E5%92%8C-runc%E5%AE%B9%E5%99%A8%E6%A0%87%E5%87%86%E5%8C%96%E5%92%8C-docker%E8%BD%AC%E8%BD%BD/</link>
+    <pubDate>Tue, 25 Oct 2022 21:53:11 &#43;0800</pubDate>
+    <author>Lynn</author>
+    <guid>http://lynn404.com/posts/oci-%E5%92%8C-runc%E5%AE%B9%E5%99%A8%E6%A0%87%E5%87%86%E5%8C%96%E5%92%8C-docker%E8%BD%AC%E8%BD%BD/</guid>
+    <description><![CDATA[OCI 和容器标准 容器技术随着 docker 的出现炙手可热，所有的技术公司都积极拥抱容器，促进了 docker 容器的繁荣发展。容器一词虽然口口相传，但却没有统一的定义，这]]></description>
+</item>
+</channel>
+</rss>

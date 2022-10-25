@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>client-go - Tag - Lynn的技术随笔</title>
+        <link>http://lynn404.com/tags/client-go/</link>
+        <description>client-go - Tag - Lynn的技术随笔</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 25 Oct 2022 21:46:00 &#43;0800</lastBuildDate><atom:link href="http://lynn404.com/tags/client-go/" rel="self" type="application/rss+xml" /><item>
+    <title>在Kubernetes中使用client-go做Leader election</title>
+    <link>http://lynn404.com/posts/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election/</link>
+    <pubDate>Tue, 25 Oct 2022 21:46:00 &#43;0800</pubDate>
+    <author>Lynn</author>
+    <guid>http://lynn404.com/posts/%E5%9C%A8kubernetes%E4%B8%AD%E4%BD%BF%E7%94%A8client-go%E5%81%9Aleader-election/</guid>
+    <description><![CDATA[简介 近年来，随着对可靠的系统和基础设施的需求增加，&ldquo;高可用性 &ldquo;这个词也越来越受欢迎。在分布式系统中，高可用性通常是指]]></description>
+</item>
+</channel>
+</rss>
