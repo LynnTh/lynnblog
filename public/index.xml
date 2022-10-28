@@ -3,9 +3,17 @@
         <title>Lynn的技术随笔</title>
         <link>http://lynn404.com/</link>
         <description>养猫人</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 25 Oct 2022 21:53:11 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 28 Oct 2022 16:21:35 &#43;0800</lastBuildDate>
             <atom:link href="http://lynn404.com/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>优雅管理pod的生命周期</title>
+    <link>http://lynn404.com/posts/%E4%BC%98%E9%9B%85%E7%AE%A1%E7%90%86pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</link>
+    <pubDate>Fri, 28 Oct 2022 16:21:35 &#43;0800</pubDate>
+    <author>Lynn</author>
+    <guid>http://lynn404.com/posts/%E4%BC%98%E9%9B%85%E7%AE%A1%E7%90%86pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</guid>
+    <description><![CDATA[pod状态计算细节 kubectl get pod 返回的状态 Pod Phase Conditions Completed Succeeded ContainerCreating Pending CrashLoopBackOff Running Container exits CreateContainerConfigError Pending eg: configmap &ldquo;test&rdquo; not found ErrImagePull / ImagePullBackOff / Init:ImagePullBackOff / InvalidImageName Pending Back-off pulling images Error Failed restartPolicy: Never &amp; container exits with Error(not 0) Evicted Failed reason: Evicted Init:0/1 Pending Init Containers don&rsquo;t exit Init:CrashLoopBackoff / Init:Error Pending]]></description>
+</item>
+<item>
     <title>OCI 和 Runc：容器标准化和 Docker【转载】</title>
     <link>http://lynn404.com/posts/oci-%E5%92%8C-runc%E5%AE%B9%E5%99%A8%E6%A0%87%E5%87%86%E5%8C%96%E5%92%8C-docker%E8%BD%AC%E8%BD%BD/</link>
     <pubDate>Tue, 25 Oct 2022 21:53:11 &#43;0800</pubDate>
