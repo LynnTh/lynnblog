@@ -2,6 +2,10 @@
 title: "优雅管理pod的生命周期"
 date: 2022-10-28T16:21:35+08:00
 draft: false
+tags:
+  - kubernetes
+categories:
+  - kubernetes
 ---
 
 ## pod状态计算细节
