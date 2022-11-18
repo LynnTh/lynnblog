@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>docker - Category - Lynn的技术随笔</title>
+        <link>http://lynn404.com/categories/docker/</link>
+        <description>docker - Category - Lynn的技术随笔</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 18 Nov 2022 12:24:37 &#43;0800</lastBuildDate><atom:link href="http://lynn404.com/categories/docker/" rel="self" type="application/rss+xml" /><item>
+    <title>Centos部署docker脚本</title>
+    <link>http://lynn404.com/posts/centos%E9%83%A8%E7%BD%B2docker%E8%84%9A%E6%9C%AC/</link>
+    <pubDate>Fri, 18 Nov 2022 12:24:37 &#43;0800</pubDate>
+    <author>Lynn</author>
+    <guid>http://lynn404.com/posts/centos%E9%83%A8%E7%BD%B2docker%E8%84%9A%E6%9C%AC/</guid>
+    <description><![CDATA[使用清华源下载docker，适用于国内环境。 使用systemd管理docker，docker.service和/etc/docker/dae]]></description>
+</item>
+</channel>
+</rss>

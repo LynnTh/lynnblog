@@ -3,9 +3,17 @@
         <title>Lynn的技术随笔</title>
         <link>http://lynn404.com/</link>
         <description>养猫人</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 28 Oct 2022 16:21:35 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 18 Nov 2022 12:24:37 &#43;0800</lastBuildDate>
             <atom:link href="http://lynn404.com/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Centos部署docker脚本</title>
+    <link>http://lynn404.com/posts/centos%E9%83%A8%E7%BD%B2docker%E8%84%9A%E6%9C%AC/</link>
+    <pubDate>Fri, 18 Nov 2022 12:24:37 &#43;0800</pubDate>
+    <author>Lynn</author>
+    <guid>http://lynn404.com/posts/centos%E9%83%A8%E7%BD%B2docker%E8%84%9A%E6%9C%AC/</guid>
+    <description><![CDATA[使用清华源下载docker，适用于国内环境。 使用systemd管理docker，docker.service和/etc/docker/dae]]></description>
+</item>
+<item>
     <title>优雅管理pod的生命周期</title>
     <link>http://lynn404.com/posts/%E4%BC%98%E9%9B%85%E7%AE%A1%E7%90%86pod%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</link>
     <pubDate>Fri, 28 Oct 2022 16:21:35 &#43;0800</pubDate>
